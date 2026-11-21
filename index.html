@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="nb">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="referrer" content="no-referrer" />
+    <title>Kodelosen</title>
+    <meta name="description" content="Fant du noe på GitHub? Lim inn lenken og få prosjektet forklart på norsk." />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect x='6' y='14' width='52' height='40' rx='4' fill='%23ffd23f' stroke='%23111' stroke-width='5'/%3E%3Cpath d='M6 26h52M32 14v12' stroke='%23111' stroke-width='5'/%3E%3C/svg%3E" />
+  </head>
+  <body>
+    <header class="topp">
+      <a class="logo" href="./">
+        <span class="logo-eske" aria-hidden="true"></span>
+        Kodelosen
+      </a>
+      <span class="topp-merke">beta · åpen kildekode</span>
+    </header>
+
+    <main>
+      <section class="helt">
+        <p class="handskrift">Fant det på GitHub?</p>
+        <h1>Få det forklart på&nbsp;norsk.</h1>
+        <p class="ingress">
+          Lim inn et prosjekt. Kodelosen leser oppsettfilene og forteller deg hva det er, hvordan det henger sammen,
+          hva du trenger og hvordan du får det i gang.
+        </p>
+
+        <form id="skjema" class="boks soek" autocomplete="off">
+          <label class="skjult" for="lenke">GitHub-prosjekt</label>
+          <input id="lenke" name="lenke" type="text" placeholder="github.com/eier/prosjekt" required spellcheck="false" />
+          <button type="submit" class="knapp knapp-gul" id="aapne">Åpne esken</button>
+        </form>
+        <div class="eksempler">
+          <span>Prøv:</span>
+          <button type="button" class="brikke" data-eksempel="BurntSushi/ripgrep">ripgrep</button>
+          <button type="button" class="brikke" data-eksempel="immich-app/immich">immich</button>
+          <button type="button" class="brikke" data-eksempel="ollama/ollama">ollama</button>
+        </div>
+
+        <details class="boks innstillinger" id="innstillinger">
+          <summary>
+            <span>⚙ Din KI-nøkkel</span>
+            <span class="nokkelstatus" id="nokkelstatus">ikke lagt inn</span>
+          </summary>
+          <div class="innstillinger-innhold">
+            <fieldset class="valg">
+              <legend>Leverandør</legend>
+              <label><input type="radio" name="leverandor" value="anthropic" checked /> Claude (Anthropic)</label>
+              <label><input type="radio" name="leverandor" value="gemini" /> Gemini (Google)</label>
+            </fieldset>
+
+            <label class="felt">
+              <span id="nokkeletikett">Anthropic-nøkkel</span>
+              <input id="nokkel" type="password" placeholder="sk-ant-…" spellcheck="false" />
+            </label>
+            <label class="avkrysning"><input id="husk" type="checkbox" /> Husk nøkkelen på denne maskinen</label>
+
+            <div class="felt">
+              <label for="modell">Modell</label>
+              <div class="rad">
+                <select id="modell"></select>
+                <button type="button" class="knapp knapp-liten" id="hentmodeller">Hent modeller</button>
+              </div>
+            </div>
+
+            <label class="felt">
+              <span>GitHub-token <em>(valgfritt, for private prosjekter og høyere grense)</em></span>
+              <input id="ghtoken" type="password" placeholder="github_pat_…" spellcheck="false" />
+            </label>
+
+            <p class="liten">
+              Nøkkelen sendes bare direkte fra nettleseren din til Anthropic eller Google. Siden har ingen tjener,
+              ingen sporing og ingen annonser. Lag gjerne en egen nøkkel med kostnadsgrense til dette.
+            </p>
+          </div>
+        </details>
+      </section>
+
+      <section id="status" class="status" hidden aria-live="polite"></section>
+      <section id="resultat" class="resultat" hidden></section>
+    </main>
+
+    <footer class="bunn">
+      <p>Forklaringene er laget av KI ut fra prosjektets egne filer. Kommandoene er ikke testet. Les dem før du kjører dem.</p>
+    </footer>
+
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
