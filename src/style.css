@@ -226,6 +226,27 @@ dfn.ord:focus { outline: 2px solid var(--korall); outline-offset: 2px; border-ra
 .verktoy { display: flex; flex-wrap: wrap; gap: 10px; }
 
 .bunn { max-width: 920px; margin: 0 auto; padding: 0 16px 40px; color: var(--dempet); font-size: 0.9rem; text-align: center; }
+.bunn p { margin: 0 0 6px; }
+.lenke {
+  font: inherit; color: inherit; background: none; border: 0; padding: 0; margin-left: 12px;
+  cursor: pointer; text-decoration: underline; text-underline-offset: 3px;
+}
+.lenke:hover { color: var(--blekk); }
+
+/* Om-vindu */
+.dialog {
+  border: var(--kant); border-radius: var(--radius); box-shadow: var(--skygge); padding: 28px;
+  background: var(--kort); color: var(--blekk); font-family: var(--font);
+}
+.dialog::backdrop { background: rgba(21, 21, 21, 0.5); }
+.om { max-width: 34rem; width: calc(100% - 32px); }
+.om h2 { margin: 0 0 12px; font-size: 1.8rem; font-weight: 800; letter-spacing: -0.02em; }
+.om p { margin: 0; }
+.om-person { margin-top: 20px; padding-top: 18px; border-top: 2px solid var(--blekk); display: grid; gap: 8px; }
+.om-person h3 { margin: 0; }
+.om-logo { width: min(16rem, 100%); height: auto; aspect-ratio: 2.05; object-fit: cover; object-position: 50% 30%; border-radius: 12px; background: #fff; }
+.om a { color: var(--blekk); }
+.om-knapper { margin-top: 20px; }
 
 @media (max-width: 600px) {
   body { font-size: 16px; }
