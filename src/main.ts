@@ -3,6 +3,7 @@ import { hentRepo, tolkLenke, type RepoPakke } from "./github";
 import { anslagPris, anslagTokens, forklar, hentModeller, standardModeller, type Leverandor } from "./llm";
 import { h, lasteLykt, tegnResultat } from "./render";
 import type { Forklaring } from "./schema";
+import { visOm } from "./om";
 
 const $ = <T extends HTMLElement>(id: string) => document.getElementById(id) as T;
 
@@ -104,6 +105,8 @@ hentmodeller.addEventListener("click", async () => {
 for (const b of document.querySelectorAll<HTMLButtonElement>("[data-eksempel]")) {
   b.addEventListener("click", () => { lenke.value = b.dataset.eksempel!; skjema.requestSubmit(); });
 }
+
+$("om").addEventListener("click", visOm);
 
 // Statusvisning
 function visLaster(tekst: string) {
