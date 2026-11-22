@@ -14,6 +14,10 @@
         <svg class="lykt logo-lykt" viewBox="0 0 40 54" aria-hidden="true"><g class="lykt-kropp"><circle cx="20" cy="6" r="4" fill="none" stroke="#151515" stroke-width="3"/><path d="M9 18 L13 11 H27 L31 18 Z" fill="#ff6b5b" stroke="#151515" stroke-width="3" stroke-linejoin="round"/><rect x="9" y="18" width="22" height="24" rx="3" fill="#ffd23f" stroke="#151515" stroke-width="3"/><path d="M20 36 C15 32 18 27 20 23 C22 27 25 32 20 36 Z" fill="#ff6b5b" stroke="#151515" stroke-width="2"/><path d="M14 22 V38 M26 22 V38" stroke="#151515" stroke-width="2" opacity=".35"/><rect x="7" y="42" width="26" height="6" rx="2" fill="#151515"/></g></svg>
         Kodelykta
       </a>
+      <button type="button" class="knapp knapp-liten om-knapp" id="om" aria-haspopup="dialog">
+        <span class="nokkelprikk" id="nokkelprikk" aria-hidden="true"></span>
+        Om og nøkkel
+      </button>
     </header>
 
     <main>
@@ -31,47 +35,10 @@
           <button type="submit" class="knapp knapp-gul" id="aapne">Lys opp</button>
         </form>
         <div class="eksempler">
-          <span>Ikke noe prosjekt for hånden?</span>
+          <span>Hvordan virker dette?</span>
           <button type="button" class="brikke" data-eksempel="klassespillet">Prøv et eksempel</button>
         </div>
 
-        <details class="boks innstillinger" id="innstillinger">
-          <summary>
-            <span>⚙ Din KI-nøkkel</span>
-            <span class="nokkelstatus" id="nokkelstatus">ikke lagt inn</span>
-          </summary>
-          <div class="innstillinger-innhold">
-            <fieldset class="valg">
-              <legend>Leverandør</legend>
-              <label><input type="radio" name="leverandor" value="anthropic" checked /> Claude (Anthropic)</label>
-              <label><input type="radio" name="leverandor" value="gemini" /> Gemini (Google)</label>
-            </fieldset>
-
-            <label class="felt">
-              <span id="nokkeletikett">Anthropic-nøkkel</span>
-              <input id="nokkel" type="password" placeholder="sk-ant-…" spellcheck="false" />
-            </label>
-            <label class="avkrysning"><input id="husk" type="checkbox" /> Husk nøkkelen på denne maskinen</label>
-
-            <div class="felt">
-              <label for="modell">Modell</label>
-              <div class="rad">
-                <select id="modell"></select>
-                <button type="button" class="knapp knapp-liten" id="hentmodeller">Hent modeller</button>
-              </div>
-            </div>
-
-            <label class="felt">
-              <span>GitHub-token <em>(valgfritt, gir høyere grense hos GitHub)</em></span>
-              <input id="ghtoken" type="password" placeholder="github_pat_…" spellcheck="false" />
-            </label>
-
-            <p class="liten">
-              Nøkkelen sendes bare direkte fra nettleseren din til Anthropic eller Google. Siden har ingen tjener,
-              ingen sporing og ingen annonser. Lag gjerne en egen nøkkel med kostnadsgrense til dette.
-            </p>
-          </div>
-        </details>
       </section>
 
       <section id="status" class="status" hidden aria-live="polite"></section>
@@ -80,8 +47,79 @@
 
     <footer class="bunn">
       <p>Forklaringene er laget av KI ut fra prosjektets egne filer. Kommandoene er ikke testet. Les dem før du kjører dem.</p>
-      <p>© Lærerliv 2026 <button type="button" class="lenke" id="om">Om Kodelykta</button></p>
+      <p>© Lærerliv 2026 <button type="button" class="lenke" id="om-bunn">Om Kodelykta</button></p>
     </footer>
+
+
+    <dialog id="om-vindu" class="dialog om" aria-labelledby="om-tittel">
+      <div class="om-hode">
+        <h2 id="om-tittel">Kodelykta</h2>
+        <form method="dialog"><button class="lukk" aria-label="Lukk">✕</button></form>
+      </div>
+      <div class="faner" role="tablist">
+        <button type="button" class="fane" role="tab" id="fk-om" aria-controls="fane-om" data-fane="om">Om</button>
+        <button type="button" class="fane" role="tab" id="fk-slik" aria-controls="fane-slik" data-fane="slik">Slik bruker du den</button>
+        <button type="button" class="fane" role="tab" id="fk-nokkel" aria-controls="fane-nokkel" data-fane="nokkel">KI-nøkkel</button>
+      </div>
+
+      <div role="tabpanel" id="fane-om" aria-labelledby="fk-om">
+        <p>Kodelykta lyser opp oppsettfilene i et GitHub-prosjekt og forklarer hva det er, hvordan det henger sammen,
+          hva du trenger og hvordan du får det i gang. Den virker bare på åpne prosjekter. Siden har ingen tjener, og nøkkelen din sendes bare direkte fra nettleseren til Anthropic eller Google.
+          Koden er åpen: <a href="https://github.com/barx10/kodelykta" target="_blank" rel="noopener">github.com/barx10/kodelykta</a>.</p>
+        <div class="om-person">
+          <img class="om-logo" src="./logo.png" alt="Lærerliv. Fra klasserom til storsamfunn." width="2560" height="1449" loading="lazy" />
+          <h3>Kenneth Bareksten</h3>
+          <p>Lærer og hobbyprogrammerer som lager digitale verktøy for å gjøre hverdagen litt enklere og mer kreativ.</p>
+          <p><a href="https://www.laererliv.no" target="_blank" rel="noopener">www.laererliv.no</a><br />
+            <a href="mailto:kenneth@laererliv.no">kenneth@laererliv.no</a></p>
+        </div>
+      </div>
+
+      <div role="tabpanel" id="fane-slik" aria-labelledby="fk-slik" hidden>
+        <ol class="slik">
+          <li><strong>Finn et prosjekt.</strong> Kopier lenken til et åpent prosjekt på GitHub, for eksempel <code>github.com/eier/prosjekt</code>.</li>
+          <li><strong>Legg inn en KI-nøkkel.</strong> Under fanen «KI-nøkkel» velger du Claude eller Gemini og limer inn nøkkelen din.
+            Nøkkel får du hos <a href="https://console.anthropic.com/" target="_blank" rel="noopener">Anthropic</a> eller
+            <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener">Google AI Studio</a>.</li>
+          <li><strong>Lim inn og trykk «Lys opp».</strong> Lykta henter oppsettfilene og viser et prisanslag før noe sendes til KI-en.</li>
+          <li><strong>Les forklaringen.</strong> Du får en enkel forklaring, et diagram, hva du trenger og steg for å komme i gang. Kommandoene kan kopieres, og alt kan lastes ned som Markdown.</li>
+        </ol>
+        <p class="liten">Ingen nøkkel ennå? Trykk «Prøv et eksempel» på forsiden for å se et ferdig resultat.</p>
+      </div>
+
+      <div class="innstillinger-innhold" role="tabpanel" id="fane-nokkel" aria-labelledby="fk-nokkel" hidden>
+        <p class="nokkellinje"><strong>Din KI-nøkkel</strong> <span class="nokkelstatus" id="nokkelstatus">ikke lagt inn</span></p>
+        <fieldset class="valg">
+          <legend>Leverandør</legend>
+          <label><input type="radio" name="leverandor" value="anthropic" checked /> Claude (Anthropic)</label>
+          <label><input type="radio" name="leverandor" value="gemini" /> Gemini (Google)</label>
+        </fieldset>
+
+        <label class="felt">
+          <span id="nokkeletikett">Anthropic-nøkkel</span>
+          <input id="nokkel" type="password" placeholder="sk-ant-…" spellcheck="false" />
+        </label>
+        <label class="avkrysning"><input id="husk" type="checkbox" /> Husk nøkkelen på denne maskinen</label>
+
+        <div class="felt">
+          <label for="modell">Modell</label>
+          <div class="rad">
+            <select id="modell"></select>
+            <button type="button" class="knapp knapp-liten" id="hentmodeller">Hent modeller</button>
+          </div>
+        </div>
+
+        <label class="felt">
+          <span>GitHub-token <em>(valgfritt, gir høyere grense hos GitHub)</em></span>
+          <input id="ghtoken" type="password" placeholder="github_pat_…" spellcheck="false" />
+        </label>
+
+        <p class="liten">
+          Nøkkelen sendes bare direkte fra nettleseren din til Anthropic eller Google. Siden har ingen tjener,
+          ingen sporing og ingen annonser. Lag gjerne en egen nøkkel med kostnadsgrense til dette.
+        </p>
+      </div>
+    </dialog>
 
     <script type="module" src="/src/main.ts"></script>
   </body>
