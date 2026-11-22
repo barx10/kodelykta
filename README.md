@@ -17,7 +17,7 @@ npm run dev
 npm run build
 ```
 
-Innholdet i `dist/` er en statisk side som kan legges på GitHub Pages, Netlify eller Cloudflare Pages. Bygget har en streng innholdssikkerhetspolicy som bare tillater kall til GitHub, Anthropic og Google.
+Innholdet i `dist/` er en statisk side som kan legges på GitHub Pages, Netlify eller Cloudflare Pages. Arbeidsflyten i `.github/workflows/pages.yml` bygger og publiserer siden på GitHub Pages ved hver push til `main`. Bygget har en streng innholdssikkerhetspolicy som bare tillater kall til GitHub, Anthropic og Google.
 
 ## Filer
 
