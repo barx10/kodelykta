@@ -39,7 +39,7 @@ async function gh<T>(sti: string, token?: string): Promise<T> {
   const headers: Record<string, string> = { Accept: "application/vnd.github+json" };
   if (token) headers.Authorization = `Bearer ${token}`;
   const svar = await fetch(`https://api.github.com${sti}`, { headers });
-  if (svar.status === 404) throw new Error("Fant ikke prosjektet. Er det privat, trenger du et GitHub-token.");
+  if (svar.status === 404) throw new Error("Fant ikke prosjektet. Kodelykta virker bare på åpne prosjekter, så sjekk lenken og at prosjektet ikke er privat.");
   if (svar.status === 403 || svar.status === 429) {
     throw new Error("GitHub-grensen er nådd (60 kall i timen uten token). Legg inn et GitHub-token eller vent litt.");
   }
