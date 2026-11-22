@@ -1,31 +1,39 @@
-// Om-vinduet: hva siden er, og hvem som har laget den.
+// Om-vinduet: om siden, hvordan den brukes, og KI-nøkkelen.
 
-export function visOm() {
-  document.querySelector(".om")?.remove();
-  const tilbakeFokus = document.activeElement as HTMLElement | null;
-  const dialog = document.createElement("dialog");
-  dialog.className = "dialog om";
-  dialog.setAttribute("aria-labelledby", "om-tittel");
-  dialog.innerHTML = `
-    <h2 id="om-tittel">Om Kodelykta</h2>
-    <p>Kodelykta lyser opp oppsettfilene i et GitHub-prosjekt og forklarer hva det er, hvordan det henger sammen,
-      hva du trenger og hvordan du får det i gang. Den virker bare på åpne prosjekter. Siden har ingen tjener, og nøkkelen din sendes bare direkte fra nettleseren til Anthropic eller Google.
-      Koden er åpen: <a href="https://github.com/barx10/kodelykta" target="_blank" rel="noopener">github.com/barx10/kodelykta</a>.</p>
-    <div class="om-person">
-      <img class="om-logo" src="./logo.png" alt="Lærerliv. Fra klasserom til storsamfunn." width="2560" height="1449" />
-      <h3>Kenneth Bareksten</h3>
-      <p>Lærer og hobbyprogrammerer som lager digitale verktøy for å gjøre hverdagen litt enklere og mer kreativ.</p>
-      <p><a href="https://www.laererliv.no" target="_blank" rel="noopener">www.laererliv.no</a><br />
-        <a href="mailto:kenneth@laererliv.no">kenneth@laererliv.no</a></p>
-    </div>
-    <form method="dialog" class="om-knapper">
-      <button class="knapp knapp-gul">Lukk</button>
-    </form>`;
-  document.body.append(dialog);
-  dialog.addEventListener("close", () => {
-    dialog.remove();
-    if (tilbakeFokus?.isConnected) tilbakeFokus.focus();
+export type OmFane = "om" | "slik" | "nokkel";
+
+const dialog = document.getElementById("om-vindu") as HTMLDialogElement;
+const faner = [...dialog.querySelectorAll<HTMLButtonElement>("[data-fane]")];
+let tilbakeFokus: HTMLElement | null = null;
+
+function velgFane(navn: OmFane) {
+  for (const f of faner) {
+    const valgt = f.dataset.fane === navn;
+    f.setAttribute("aria-selected", String(valgt));
+    f.tabIndex = valgt ? 0 : -1;
+    document.getElementById(`fane-${f.dataset.fane}`)!.hidden = !valgt;
+  }
+}
+
+faner.forEach((f, i) => {
+  f.addEventListener("click", () => velgFane(f.dataset.fane as OmFane));
+  f.addEventListener("keydown", (e) => {
+    if (e.key !== "ArrowRight" && e.key !== "ArrowLeft") return;
+    const neste = faner[(i + (e.key === "ArrowRight" ? 1 : faner.length - 1)) % faner.length];
+    velgFane(neste.dataset.fane as OmFane);
+    neste.focus();
   });
-  dialog.showModal();
-  dialog.querySelector("button")?.focus();
+});
+
+// Lukk ved klikk utenfor vinduet.
+dialog.addEventListener("click", (e) => { if (e.target === dialog) dialog.close(); });
+dialog.addEventListener("close", () => { if (tilbakeFokus?.isConnected) tilbakeFokus.focus(); });
+
+export function visOm(fane: OmFane = "om", fokus?: HTMLElement) {
+  velgFane(fane);
+  if (!dialog.open) {
+    tilbakeFokus = document.activeElement as HTMLElement | null;
+    dialog.showModal();
+  }
+  (fokus ?? faner.find((f) => f.dataset.fane === fane))?.focus();
 }

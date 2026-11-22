@@ -110,13 +110,15 @@ function gjettOs(): "macos" | "windows" | "linux" {
 async function tegnDiagram(boks: HTMLElement, kode: string) {
   try {
     const { default: mermaid } = await import("mermaid");
+    // Skriften må være lastet før Mermaid måler teksten, ellers blir boksene feil.
+    try { await document.fonts.load('700 20px "Caveat"'); } catch { /* bruk reserveskrift */ }
     mermaid.initialize({
       startOnLoad: false,
       securityLevel: "strict",
       look: "handDrawn",
       handDrawnSeed: 7,
       theme: "base",
-      fontFamily: "Bricolage Grotesque Variable, system-ui, sans-serif",
+      fontFamily: "Caveat, cursive",
       themeVariables: {
         primaryColor: "#ffd23f",
         primaryTextColor: "#151515",
@@ -125,7 +127,7 @@ async function tegnDiagram(boks: HTMLElement, kode: string) {
         tertiaryColor: "#3ddc97",
         lineColor: "#151515",
         background: "#fff8e7",
-        fontSize: "16px",
+        fontSize: "21px",
       },
     });
     await mermaid.parse(kode);

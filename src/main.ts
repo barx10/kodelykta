@@ -10,7 +10,6 @@ const $ = <T extends HTMLElement>(id: string) => document.getElementById(id) as 
 const skjema = $<HTMLFormElement>("skjema");
 const lenke = $<HTMLInputElement>("lenke");
 const aapne = $<HTMLButtonElement>("aapne");
-const innstillinger = $<HTMLDetailsElement>("innstillinger");
 const nokkel = $<HTMLInputElement>("nokkel");
 const nokkeletikett = $("nokkeletikett");
 const husk = $<HTMLInputElement>("husk");
@@ -18,6 +17,7 @@ const modell = $<HTMLSelectElement>("modell");
 const hentmodeller = $<HTMLButtonElement>("hentmodeller");
 const ghtoken = $<HTMLInputElement>("ghtoken");
 const nokkelstatus = $("nokkelstatus");
+const nokkelprikk = $("nokkelprikk");
 const status = $("status");
 const resultat = $("resultat");
 
@@ -62,6 +62,8 @@ function oppdaterStatus() {
   const har = nokkel.value.trim().length > 0;
   nokkelstatus.textContent = har ? `${leverandor() === "anthropic" ? "Claude" : "Gemini"} klar` : "ikke lagt inn";
   nokkelstatus.classList.toggle("ok", har);
+  nokkelprikk.classList.toggle("ok", har);
+  $("om").title = har ? "KI-nøkkel er lagt inn" : "Ingen KI-nøkkel lagt inn ennå";
 }
 
 function lagreNokkel() {
@@ -112,7 +114,7 @@ for (const b of document.querySelectorAll<HTMLButtonElement>("[data-eksempel]"))
     status.replaceChildren(
       h("div", { class: "boks statuskort" },
         h("h2", {}, "Dette er et ferdig eksempel"),
-        h("p", {}, "Det viser hva du får, og er laget på forhånd. Det trengs ingen nøkkel. For å lyse opp et prosjekt du velger selv, legger du inn en KI-nøkkel under «Din KI-nøkkel»."),
+        h("p", {}, "Det viser hva du får, og er laget på forhånd. Det trengs ingen nøkkel. For å lyse opp et prosjekt du velger selv, legger du inn en KI-nøkkel under «Om og nøkkel» øverst til høyre."),
       ),
     );
     tegnResultat(resultat, eksempelForklaring, eksempelPakke, "Claude (forhåndslaget eksempel)");
@@ -120,7 +122,8 @@ for (const b of document.querySelectorAll<HTMLButtonElement>("[data-eksempel]"))
   });
 }
 
-$("om").addEventListener("click", visOm);
+$("om").addEventListener("click", () => visOm(nokkel.value.trim() ? "om" : "slik"));
+$("om-bunn").addEventListener("click", () => visOm("om"));
 
 // Statusvisning
 function visLaster(tekst: string) {
@@ -144,8 +147,7 @@ async function kjorForklaring(pakke: RepoPakke) {
   const m = modell.value;
   const modellNavn = modell.selectedOptions[0]?.textContent ?? m;
   if (!k) {
-    innstillinger.open = true;
-    nokkel.focus();
+    visOm("nokkel", nokkel);
     visFeil("Legg inn en nøkkel først. Den brukes bare i nettleseren din.");
     return;
   }
