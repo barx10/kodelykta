@@ -102,8 +102,22 @@ hentmodeller.addEventListener("click", async () => {
   }
 });
 
+// Ferdig eksempel som vises uten nøkkel og uten kall mot GitHub eller KI.
 for (const b of document.querySelectorAll<HTMLButtonElement>("[data-eksempel]")) {
-  b.addEventListener("click", () => { lenke.value = b.dataset.eksempel!; skjema.requestSubmit(); });
+  b.addEventListener("click", async () => {
+    const { eksempelPakke, eksempelForklaring } = await import("./eksempel");
+    lenke.value = "";
+    history.replaceState(null, "", location.pathname);
+    status.hidden = false;
+    status.replaceChildren(
+      h("div", { class: "boks statuskort" },
+        h("h2", {}, "Dette er et ferdig eksempel"),
+        h("p", {}, "Det viser hva du får, og er laget på forhånd. Det trengs ingen nøkkel. For å lyse opp et prosjekt du velger selv, legger du inn en KI-nøkkel under «Din KI-nøkkel»."),
+      ),
+    );
+    tegnResultat(resultat, eksempelForklaring, eksempelPakke, "Claude (forhåndslaget eksempel)");
+    resultat.scrollIntoView({ behavior: "smooth", block: "start" });
+  });
 }
 
 $("om").addEventListener("click", visOm);
