@@ -40,7 +40,7 @@ export const eksempelForklaring: Forklaring = {
   trenger_jeg: {
     svar:
       "Hvis du er lærer og vil prøve Good Behavior Game, skal du bare åpne den ferdige nettsiden. Det tar null minutter å sette opp. Du trenger bare å kjøre koden selv hvis du vil endre den eller bruke den uten internett fra egen maskin.",
-    enklere_alternativ: "Den ferdige nettsiden: https://barx10.github.io/klassespillet/",
+    enklere_alternativ: "Den ferdige nettsiden: https://klassespillet.laererliv.no",
   },
   ordliste: [
     { ord: "Good Behavior Game", forklaring: "En metode der hele klassen jobber sammen om å følge noen få regler." },
