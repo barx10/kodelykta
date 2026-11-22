@@ -52,10 +52,6 @@ main { max-width: 920px; margin: 0 auto; padding: 0 16px 64px; }
   font-weight: 800; font-size: 1.35rem; color: var(--blekk); text-decoration: none; letter-spacing: -0.02em;
 }
 .logo-lykt { width: 30px; height: 40px; transform: rotate(-8deg); filter: drop-shadow(2px 2px 0 var(--blekk)); }
-.topp-merke {
-  font-size: 0.8rem; font-weight: 700; border: 2px solid var(--blekk); border-radius: 999px;
-  padding: 2px 10px; background: var(--kort);
-}
 
 /* Helt */
 .helt { padding: 28px 0 8px; }
