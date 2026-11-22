@@ -45,7 +45,8 @@ Regler for svaret:
 export function byggMelding(pakke: RepoPakke): string {
   const i = pakke.info;
   const filer = pakke.filer
-    .map((f) => `<fil sti="${f.sti}"${f.avkortet ? ' avkortet="ja"' : ""}>\n${f.innhold}\n</fil>`)
+    // Filene kan ikke lukke sin egen ramme og late som de er noe annet enn data.
+    .map((f) => `<fil sti="${f.sti.replace(/["<>]/g, "_")}"${f.avkortet ? ' avkortet="ja"' : ""}>\n${f.innhold.replace(/<\/?fil\b/gi, "<_fil")}\n</fil>`)
     .join("\n\n");
   return `Prosjekt: ${i.eier}/${i.navn}
 Beskrivelse fra GitHub: ${i.beskrivelse || "(ingen)"}

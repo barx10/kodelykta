@@ -2,8 +2,15 @@ import "./style.css";
 import { hentRepo, tolkLenke, type RepoPakke } from "./github";
 import { anslagPris, anslagTokens, forklar, hentModeller, standardModeller, type Leverandor } from "./llm";
 import { h, lasteLykt, tegnResultat } from "./render";
-import type { Forklaring } from "./schema";
+import { erForklaring } from "./schema";
 import { visOm } from "./om";
+
+// Siden skal ikke kunne bygges inn i en annen side (klikkfelle). GitHub Pages lar oss ikke sende
+// den vanlige sikkerhetsoverskriften, så vi stopper det her i stedet.
+if (window.top !== window.self) {
+  document.body.innerHTML = '<main><p style="padding:24px">Kodelykta må åpnes i et eget vindu: <a href="https://kodelykta.laererliv.no/" target="_top" rel="noopener">kodelykta.laererliv.no</a></p></main>';
+  throw new Error("Kodelykta kjører ikke inne i en ramme.");
+}
 
 const $ = <T extends HTMLElement>(id: string) => document.getElementById(id) as T;
 
@@ -72,6 +79,13 @@ function lagreNokkel() {
   if (v) lagre.skriv(`nokkel:${lev}`, v, husk.checked);
   else lagre.fjern(`nokkel:${lev}`);
   oppdaterStatus();
+  lagreGhToken();
+}
+
+// GitHub-tokenet følger samme valg som «Husk nøkkelen».
+function lagreGhToken() {
+  const v = ghtoken.value.trim();
+  if (v) lagre.skriv("ghtoken", v, husk.checked); else lagre.fjern("ghtoken");
 }
 
 for (const r of document.querySelectorAll<HTMLInputElement>('input[name="leverandor"]')) {
@@ -80,10 +94,7 @@ for (const r of document.querySelectorAll<HTMLInputElement>('input[name="leveran
 nokkel.addEventListener("input", lagreNokkel);
 husk.addEventListener("change", lagreNokkel);
 modell.addEventListener("change", () => lagre.skriv(`modell:${leverandor()}`, modell.value, true));
-ghtoken.addEventListener("input", () => {
-  const v = ghtoken.value.trim();
-  if (v) lagre.skriv("ghtoken", v, husk.checked); else lagre.fjern("ghtoken");
-});
+ghtoken.addEventListener("input", lagreGhToken);
 
 hentmodeller.addEventListener("click", async () => {
   const lev = leverandor();
@@ -169,7 +180,12 @@ function visAnslag(pakke: RepoPakke) {
   const m = modell.value;
   const tokens = anslagTokens(pakke);
   const pris = anslagPris(m, tokens);
-  const lagret = (() => { try { return localStorage.getItem(hurtigNokkel(lev, pakke, m)); } catch { return null; } })();
+  const lagret = (() => {
+    try {
+      const data = JSON.parse(localStorage.getItem(hurtigNokkel(lev, pakke, m)) ?? "null");
+      return erForklaring(data) ? data : null;
+    } catch { return null; }
+  })();
 
   const forklarKnapp = h("button", { type: "button", class: "knapp knapp-gul" }, lagret ? "Lag ny forklaring" : "Lys opp prosjektet");
   forklarKnapp.addEventListener("click", () => kjorForklaring(pakke));
@@ -178,7 +194,7 @@ function visAnslag(pakke: RepoPakke) {
     const vis = h("button", { type: "button", class: "knapp knapp-mynte" }, "Vis lagret forklaring (gratis)");
     vis.addEventListener("click", () => {
       status.hidden = true;
-      tegnResultat(resultat, JSON.parse(lagret) as Forklaring, pakke, modell.selectedOptions[0]?.textContent ?? m);
+      tegnResultat(resultat, lagret, pakke, modell.selectedOptions[0]?.textContent ?? m);
     });
     knapper.prepend(vis);
   }

@@ -32,13 +32,16 @@ export function tolkLenke(tekst: string): { eier: string; navn: string } | null 
   const m =
     t.match(/github\.com[/:]([\w.-]+)\/([\w.-]+)/i) ??
     t.match(/^([\w.-]+)\/([\w.-]+)$/);
-  return m ? { eier: m[1], navn: m[2] } : null;
+  if (!m) return null;
+  // Navn som bare består av punktum («.» og «..») ville flyttet kallet til en annen adresse hos GitHub.
+  if (/^\.+$/.test(m[1]) || /^\.+$/.test(m[2])) return null;
+  return { eier: m[1], navn: m[2] };
 }
 
 async function gh<T>(sti: string, token?: string): Promise<T> {
   const headers: Record<string, string> = { Accept: "application/vnd.github+json" };
   if (token) headers.Authorization = `Bearer ${token}`;
-  const svar = await fetch(`https://api.github.com${sti}`, { headers });
+  const svar = await fetch(`https://api.github.com${sti}`, { headers, redirect: "error" });
   if (svar.status === 404) throw new Error("Fant ikke prosjektet. Kodelykta virker bare på åpne prosjekter, så sjekk lenken og at prosjektet ikke er privat.");
   if (svar.status === 403 || svar.status === 429) {
     throw new Error("GitHub-grensen er nådd (60 kall i timen uten token). Legg inn et GitHub-token eller vent litt.");
@@ -91,11 +94,11 @@ export async function hentRepo(
   status?: (t: string) => void,
 ): Promise<RepoPakke> {
   status?.("Ser på prosjektet …");
-  const repo = await gh<any>(`/repos/${eier}/${navn}`, token);
+  const repo = await gh<any>(`/repos/${encodeURIComponent(eier)}/${encodeURIComponent(navn)}`, token);
   const gren: string = repo.default_branch;
 
   status?.("Leser mappestrukturen …");
-  const tre = await gh<any>(`/repos/${eier}/${navn}/git/trees/${encodeURIComponent(gren)}?recursive=1`, token);
+  const tre = await gh<any>(`/repos/${encodeURIComponent(eier)}/${encodeURIComponent(navn)}/git/trees/${encodeURIComponent(gren)}?recursive=1`, token);
   const stier: string[] = (tre.tree as any[]).filter((t) => t.type === "blob").map((t) => t.path);
 
   const valgt = stier
@@ -112,7 +115,7 @@ export async function hentRepo(
   let totalt = 0;
   const hentet = await Promise.all(
     utvalg.map(async ({ sti }) => {
-      const url = `https://raw.githubusercontent.com/${eier}/${navn}/${tre.sha}/${sti.split("/").map(encodeURIComponent).join("/")}`;
+      const url = `https://raw.githubusercontent.com/${encodeURIComponent(eier)}/${encodeURIComponent(navn)}/${encodeURIComponent(tre.sha)}/${sti.split("/").map(encodeURIComponent).join("/")}`;
       const r = await fetch(url, token ? { headers: { Authorization: `Bearer ${token}` } } : undefined);
       return r.ok ? { sti, tekst: await r.text() } : null;
     }),

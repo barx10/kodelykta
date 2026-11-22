@@ -20,7 +20,18 @@ export function h(tag: string, attr: Record<string, string> = {}, ...barn: Barn[
   return el;
 }
 
+// Kommandoer som laster ned og kjører kode direkte, eller som endrer mye på maskinen.
+const risiko: [RegExp, string][] = [
+  [/\b(curl|wget|iwr|irm|Invoke-WebRequest|Invoke-RestMethod)\b[^\n]*\|\s*(sudo\s+)?(ba|z|k)?sh\b|\|\s*(iex|Invoke-Expression)\b|\b(iex|Invoke-Expression)\b/i,
+    "Denne kommandoen laster ned et skript og kjører det med en gang. Sjekk at adressen tilhører prosjektet før du kjører den."],
+  [/\brm\s+-[a-z]*r[a-z]*f|\brm\s+-[a-z]*f[a-z]*r|\bmkfs\b|\bdd\s+if=|Remove-Item[^\n]*-Recurse|\bformat\s+[a-z]:/i,
+    "Denne kommandoen sletter filer. Les den nøye før du kjører den."],
+  [/\bsudo\b|Set-ExecutionPolicy|\bchmod\s+(-R\s+)?777\b/i,
+    "Denne kommandoen kjører med utvidede rettigheter på maskinen din. Les den nøye før du kjører den."],
+];
+
 function kodeblokk(kommando: string): HTMLElement {
+  const varsel = risiko.find(([m]) => m.test(kommando));
   const knapp = h("button", { type: "button", class: "kopier" }, "Kopier");
   knapp.addEventListener("click", async () => {
     try {
@@ -32,7 +43,10 @@ function kodeblokk(kommando: string): HTMLElement {
       knapp.textContent = "Marker og kopier";
     }
   });
-  return h("div", { class: "kode" }, h("pre", {}, h("code", {}, kommando)), knapp);
+  return h("div", {},
+    varsel && h("p", { class: "varsel", role: "note" }, h("strong", {}, "⚠ Obs: "), varsel[1]),
+    h("div", { class: "kode" }, h("pre", {}, h("code", {}, kommando)), knapp),
+  );
 }
 
 function panel(tittel: string, ...innhold: Barn[]): HTMLElement {
@@ -80,7 +94,8 @@ function markerOrd(rot: HTMLElement, ordliste: { ord: string; forklaring: string
 const domTekst = { ja: ["✓", "Ja, dette skal virke"], kanskje: ["?", "Kanskje"], nei: ["✗", "Nei, ikke støttet"] } as const;
 
 function osInnhold(os: OsDel): HTMLElement {
-  const [ikon, tekst] = domTekst[os.virker] ?? domTekst.kanskje;
+  const virker = Object.hasOwn(domTekst, os.virker) ? os.virker : "kanskje";
+  const [ikon, tekst] = domTekst[virker];
   const liste = h("ol", { class: "steg" });
   for (const s of os.steg) {
     liste.append(
@@ -92,7 +107,7 @@ function osInnhold(os: OsDel): HTMLElement {
     );
   }
   return h("div", {},
-    h("div", { class: `dom dom-${os.virker}` },
+    h("div", { class: `dom dom-${virker}` },
       h("span", { class: "dom-ikon", "aria-hidden": "true" }, ikon),
       h("div", {}, h("strong", {}, tekst), os.merknad && h("div", {}, os.merknad)),
     ),
@@ -263,5 +278,6 @@ function lastNedMarkdown(f: Forklaring, pakke: RepoPakke) {
   const blob = new Blob([l.join("\n")], { type: "text/markdown;charset=utf-8" });
   const a = h("a", { href: URL.createObjectURL(blob), download: `${i.navn}-forklart.md` }) as HTMLAnchorElement;
   a.click();
+  setTimeout(() => URL.revokeObjectURL(a.href), 10_000);
   setTimeout(() => URL.revokeObjectURL(a.href), 1000);
 }
