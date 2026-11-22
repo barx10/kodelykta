@@ -1,7 +1,7 @@
 import "./style.css";
 import { hentRepo, tolkLenke, type RepoPakke } from "./github";
 import { anslagPris, anslagTokens, forklar, hentModeller, standardModeller, type Leverandor } from "./llm";
-import { h, tegnResultat } from "./render";
+import { h, lasteLykt, tegnResultat } from "./render";
 import type { Forklaring } from "./schema";
 
 const $ = <T extends HTMLElement>(id: string) => document.getElementById(id) as T;
@@ -108,7 +108,7 @@ for (const b of document.querySelectorAll<HTMLButtonElement>("[data-eksempel]"))
 // Statusvisning
 function visLaster(tekst: string) {
   status.hidden = false;
-  status.replaceChildren(h("div", { class: "boks statuskort" }, h("div", { class: "laster" }, h("span", { class: "eske-animasjon" }), tekst)));
+  status.replaceChildren(h("div", { class: "boks statuskort" }, h("div", { class: "laster" }, lasteLykt(), tekst)));
 }
 function visFeil(tekst: string) {
   status.hidden = false;
@@ -152,7 +152,7 @@ function visAnslag(pakke: RepoPakke) {
   const pris = anslagPris(m, tokens);
   const lagret = (() => { try { return localStorage.getItem(hurtigNokkel(lev, pakke, m)); } catch { return null; } })();
 
-  const forklarKnapp = h("button", { type: "button", class: "knapp knapp-gul" }, lagret ? "Lag ny forklaring" : "Forklar prosjektet");
+  const forklarKnapp = h("button", { type: "button", class: "knapp knapp-gul" }, lagret ? "Lag ny forklaring" : "Lys opp prosjektet");
   forklarKnapp.addEventListener("click", () => kjorForklaring(pakke));
   const knapper = h("div", { class: "verktoy" }, forklarKnapp);
   if (lagret) {
@@ -167,7 +167,7 @@ function visAnslag(pakke: RepoPakke) {
   status.hidden = false;
   status.replaceChildren(
     h("div", { class: "boks statuskort" },
-      h("h2", {}, `${pakke.info.eier}/${pakke.info.navn} er pakket ut`),
+      h("h2", {}, `Lykta har sett på ${pakke.info.eier}/${pakke.info.navn}`),
       pakke.info.beskrivelse && h("p", {}, pakke.info.beskrivelse),
       h("div", { class: "anslag" },
         h("span", { class: "merke" }, `${pakke.filer.length} filer valgt av ${pakke.antallFiler}`),

@@ -1,5 +1,5 @@
 {
-  "name": "repoforklarer",
+  "name": "kodelykta",
   "version": "1.0.0",
   "description": "Lim inn et GitHub-prosjekt og få det forklart på norsk",
   "main": "index.js",

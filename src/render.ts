@@ -3,6 +3,15 @@ import type { RepoPakke } from "./github";
 
 type Barn = Node | string | null | undefined | false;
 
+const LYKT_SVG = `<svg class="lykt" viewBox="0 0 40 54" aria-hidden="true"><g class="lykt-kropp"><circle cx="20" cy="6" r="4" fill="none" stroke="#151515" stroke-width="3"/><path d="M9 18 L13 11 H27 L31 18 Z" fill="#ff6b5b" stroke="#151515" stroke-width="3" stroke-linejoin="round"/><rect x="9" y="18" width="22" height="24" rx="3" fill="#ffd23f" stroke="#151515" stroke-width="3"/><path d="M20 36 C15 32 18 27 20 23 C22 27 25 32 20 36 Z" fill="#ff6b5b" stroke="#151515" stroke-width="2"/><path d="M14 22 V38 M26 22 V38" stroke="#151515" stroke-width="2" opacity=".35"/><rect x="7" y="42" width="26" height="6" rx="2" fill="#151515"/></g></svg>`;
+
+/** Lykt som svinger og lyser, brukt mens noe lastes. */
+export function lasteLykt(): HTMLElement {
+  const el = h("span", { class: "laste-lykt" });
+  el.innerHTML = LYKT_SVG; // fast, egen SVG
+  return el;
+}
+
 /** Liten hjelper som lager DOM-elementer. All tekst settes som tekst, aldri som HTML. */
 export function h(tag: string, attr: Record<string, string> = {}, ...barn: Barn[]): HTMLElement {
   const el = document.createElement(tag);
@@ -135,7 +144,7 @@ export function tegnResultat(mål: HTMLElement, f: Forklaring, pakke: RepoPakke,
   const v = f.vurdering;
 
   const tittel = h("section", { class: "boks tittelkort" },
-    h("p", { class: "handskrift" }, "Åpner esken …"),
+    h("p", { class: "handskrift" }, "Dette fant lykta …"),
     h("h2", {}, h("a", { href: `https://github.com/${i.eier}/${i.navn}`, target: "_blank", rel: "noopener noreferrer" }, `${i.eier}/${i.navn}`)),
     h("p", {}, f.oppsummering),
     f.for_hvem && h("p", {}, h("strong", {}, "For hvem: "), f.for_hvem),
@@ -149,7 +158,7 @@ export function tegnResultat(mål: HTMLElement, f: Forklaring, pakke: RepoPakke,
     v.vedlikehold && h("p", { style: "margin-top:12px" }, h("strong", {}, "Vedlikehold: "), v.vedlikehold),
   );
 
-  const diagramboks = h("div", { class: "diagram" }, h("div", { class: "laster" }, h("span", { class: "eske-animasjon" }), "Tegner …"));
+  const diagramboks = h("div", { class: "diagram" }, h("div", { class: "laster" }, lasteLykt(), "Tegner …"));
   const enkelt = h("section", { class: "boks panel enkelt" },
     h("span", { class: "panel-merke" }, "Uten fagord"),
     h("h2", {}, "Forklart enkelt"),
@@ -247,7 +256,7 @@ function lastNedMarkdown(f: Forklaring, pakke: RepoPakke) {
   }
   if (f.begrensninger.length) l.push("## Verdt å vite", "", ...f.begrensninger.map((b) => `- ${b}`), "");
   if (f.ordliste.length) l.push("## Ordliste", "", ...f.ordliste.map((o) => `- **${o.ord}**: ${o.forklaring}`), "");
-  l.push("---", `Laget av Kodelosen fra commit ${i.commit.slice(0, 7)}. Kommandoene er ikke testet.`);
+  l.push("---", `Laget av Kodelykta fra commit ${i.commit.slice(0, 7)}. Kommandoene er ikke testet.`);
 
   const blob = new Blob([l.join("\n")], { type: "text/markdown;charset=utf-8" });
   const a = h("a", { href: URL.createObjectURL(blob), download: `${i.navn}-forklart.md` }) as HTMLAnchorElement;

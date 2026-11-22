@@ -1,4 +1,4 @@
-# Kodelosen
+# Kodelykta
 
 Lim inn et GitHub-prosjekt og få det forklart på norsk: hva det er, et diagram over hvordan det henger sammen, mappeoversikt, deleliste og trinn for macOS, Windows og Linux.
 

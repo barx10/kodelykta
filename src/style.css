@@ -51,11 +51,7 @@ main { max-width: 920px; margin: 0 auto; padding: 0 16px 64px; }
   display: inline-flex; align-items: center; gap: 10px;
   font-weight: 800; font-size: 1.35rem; color: var(--blekk); text-decoration: none; letter-spacing: -0.02em;
 }
-.logo-eske {
-  width: 30px; height: 24px; background: var(--gul); border: var(--kant); border-radius: 4px;
-  box-shadow: var(--skygge-liten); position: relative; transform: rotate(-6deg);
-}
-.logo-eske::after { content: ""; position: absolute; left: 0; right: 0; top: 6px; border-top: 3px solid var(--blekk); }
+.logo-lykt { width: 30px; height: 40px; transform: rotate(-8deg); filter: drop-shadow(2px 2px 0 var(--blekk)); }
 .topp-merke {
   font-size: 0.8rem; font-weight: 700; border: 2px solid var(--blekk); border-radius: 999px;
   padding: 2px 10px; background: var(--kort);
@@ -123,13 +119,16 @@ input[type="radio"], input[type="checkbox"] { accent-color: var(--blekk); width:
 .statuskort { padding: 20px 22px; display: grid; gap: 12px; }
 .statuskort h2 { margin: 0; font-size: 1.3rem; }
 .laster { display: flex; align-items: center; gap: 14px; font-weight: 700; }
-.eske-animasjon {
-  width: 38px; height: 30px; background: var(--gul); border: var(--kant); border-radius: 5px; flex: none;
-  animation: vippe 0.9s ease-in-out infinite; position: relative;
+.laste-lykt { position: relative; width: 44px; height: 54px; flex: none; display: inline-block; }
+.laste-lykt::before {
+  content: ""; position: absolute; left: 50%; top: 22px; width: 90px; height: 90px; margin-left: -45px; margin-top: -45px;
+  border-radius: 50%; background: radial-gradient(circle, rgba(255, 210, 63, 0.75) 0%, rgba(255, 210, 63, 0) 65%);
+  animation: glod 1.4s ease-in-out infinite; z-index: 0;
 }
-.eske-animasjon::after { content: ""; position: absolute; left: -3px; right: -3px; top: -9px; height: 9px; background: var(--gul); border: var(--kant); border-radius: 4px; animation: lokk 0.9s ease-in-out infinite; transform-origin: left bottom; }
-@keyframes vippe { 50% { transform: rotate(-5deg) translateY(-2px); } }
-@keyframes lokk { 50% { transform: rotate(-25deg); } }
+.laste-lykt .lykt { position: relative; z-index: 1; width: 40px; height: 54px; transform-origin: 20px 2px; animation: svinge 1.4s ease-in-out infinite; }
+@keyframes svinge { 0%, 100% { transform: rotate(-10deg); } 50% { transform: rotate(10deg); } }
+@keyframes glod { 0%, 100% { opacity: 0.55; transform: scale(0.9); } 50% { opacity: 1; transform: scale(1.1); } }
+@media (prefers-reduced-motion: reduce) { .laste-lykt .lykt, .laste-lykt::before { animation: none; } }
 .feil { background: #ffe1dc; }
 .anslag { display: flex; flex-wrap: wrap; gap: 8px; }
 
