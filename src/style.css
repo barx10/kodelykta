@@ -248,6 +248,11 @@ dfn.ord:focus { outline: 2px solid var(--korall); outline-offset: 2px; border-ra
   border: var(--kant); border-radius: 10px; background: var(--kort); box-shadow: var(--skygge-liten);
 }
 .lukk:hover { background: var(--korall); }
+/* Alle fanene ligger oppå hverandre, så vinduet beholder samme størrelse. */
+.om-paneler { display: grid; }
+.om-paneler > [role="tabpanel"] { grid-area: 1 / 1; align-self: start; min-width: 0; }
+.om-paneler > [hidden] { display: block !important; visibility: hidden; }
+.om-paneler > .innstillinger-innhold[hidden] { display: grid !important; }
 .slik { margin: 0 0 14px; padding-left: 1.3em; display: grid; gap: 10px; }
 .slik code { font-family: var(--mono); font-size: 0.88rem; }
 .om-person { margin-top: 20px; padding-top: 18px; border-top: 2px solid var(--blekk); display: grid; gap: 8px; }
@@ -256,6 +261,9 @@ dfn.ord:focus { outline: 2px solid var(--korall); outline-offset: 2px; border-ra
 .om a { color: var(--blekk); }
 
 @media (max-width: 600px) {
+  .dialog { padding: 20px 18px; }
+  .om .faner { gap: 6px; flex-wrap: nowrap; }
+  .om .fane { font-size: 0.85rem; padding: 6px 9px; white-space: nowrap; }
   body { font-size: 16px; }
   .soek { flex-direction: column; }
   .mapper li { grid-template-columns: 1fr; gap: 2px; }
